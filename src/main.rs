@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use std::{
     env::args,
-    io::{self, Write},
+    fs::File,
+    io::{self, BufReader, Write},
+    path::PathBuf,
 };
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -37,17 +39,9 @@ USAGE:
     )
 }
 
-fn new_password() {
-    let mut service_name = String::new();
+fn new_password(service_name: String) {
     let mut password = String::new();
-
-    print!("Enter the name of the service: ");
-    io::stdout().flush().unwrap(); // Flush stdout to ensure the prompt appears immediately
     let stdin = io::stdin(); // We get `Stdin` here.
-    stdin.read_line(&mut service_name).unwrap();
-
-    // Trim the newline character at the end of the input
-    service_name = service_name.trim_end().to_string();
 
     print!(
         "Enter the password for {} or type random for a random one: ",
@@ -59,17 +53,44 @@ fn new_password() {
     // Trim the newline character at the end of the input
     password = password.trim_end().to_string();
 
+    // checks to see if user typed random
+    // match password{
+    //     "random".to_owned() => rand::random(),
+    //     _ =>
+    // }
+
     println!("Service: {}, Password: {}", service_name, password);
+}
+
+fn remove_password() {
+    let mut service_name = String::new();
+
+    print!("Enter the name of the service: ");
+    io::stdout().flush().unwrap(); // Flush stdout to ensure the prompt appears immediately
+    let stdin = io::stdin(); // We get `Stdin` here.
+    stdin.read_line(&mut service_name).unwrap();
+}
+
+fn read_passwords(file_path: PathBuf) -> String {
+    let path: &str = file_path.to_str().unwrap();
+    let file: File = File::open(path).expect("file not found");
+    let reader: BufReader<File> = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+    json.to_string()
 }
 
 fn main() {
     let mut args = args();
     let mut _program = args.next().expect("program");
+    let path: PathBuf = PathBuf::from("src/passwords.json");
+    println!("{}", read_passwords(path));
 
     if let Some(argument) = args.next() {
         match argument.as_str() {
-            "add" => new_password(),
-            "remove" => println!("removing password"),
+            "add" => new_password(args.next().expect("no service name found")),
+            "remove" => remove_password(),
             _ => intro(),
         }
     }
