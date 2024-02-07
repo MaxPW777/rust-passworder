@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::{
     env::args,
     fs::File,
@@ -71,21 +72,27 @@ fn remove_password() {
     stdin.read_line(&mut service_name).unwrap();
 }
 
-fn read_passwords(file_path: PathBuf) -> String {
+fn read_passwords(file_path: PathBuf) -> PasswordManager {
     let path: &str = file_path.to_str().unwrap();
     let file: File = File::open(path).expect("file not found");
     let reader: BufReader<File> = BufReader::new(file);
 
     let json: serde_json::Value =
         serde_json::from_reader(reader).expect("JSON was not well-formatted");
-    json.to_string()
+
+    let creds: Vec<Credential> = json
+        .get("credentials")
+        .and_then(|credentials: &Value| serde_json::from_value(credentials.clone()).ok())
+        .expect("not getting anything man");
+
+    PasswordManager { credentials: creds }
 }
 
 fn main() {
     let mut args = args();
     let mut _program = args.next().expect("program");
     let path: PathBuf = PathBuf::from("src/passwords.json");
-    println!("{}", read_passwords(path));
+    println!("{:?}", read_passwords(path).credentials);
 
     if let Some(argument) = args.next() {
         match argument.as_str() {
