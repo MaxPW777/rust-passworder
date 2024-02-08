@@ -65,10 +65,10 @@ fn new_password(service_name: String) {
     password = password.trim_end().to_string();
 
     // checks to see if user typed random
-    // match password{
-    //     "random".to_owned() => rand::random(),
-    //     _ =>
-    // }
+    if password.trim() == "random" {
+        password = generate_random_password();
+        println!("your new password is {}", password);
+    }
 
     println!("Service: {}, Password: {}", service_name, password);
 }
