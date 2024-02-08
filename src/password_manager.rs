@@ -1,8 +1,15 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    path::PathBuf,
+};
 
-use crate::utils::generate_random_password;
+use crate::{
+    models::{Credential, PasswordManager},
+    storage::save_passwords,
+    utils::generate_random_password,
+};
 
-fn password_input(service_name: String) {
+fn password_input(service_name: String) -> Credential {
     let mut password = String::new();
     let stdin = io::stdin();
     // We get `Stdin` here.
@@ -24,11 +31,20 @@ fn password_input(service_name: String) {
         println!("your new password is {}", password);
     }
 
-    println!("Service: {}, Password: {}", service_name, password);
+    Credential {
+        service_name,
+        encrypted_password: password,
+    }
 }
 
-pub fn new_password(service_name: String) {
-    password_input(service_name);
+pub fn new_password(
+    mut password_manager: PasswordManager,
+    service_name: String,
+    filepath: &PathBuf,
+) {
+    let creds: Credential = password_input(service_name);
+    password_manager.add_credentials(creds);
+    save_passwords(filepath, password_manager)
 }
 
 pub fn remove_password() {
