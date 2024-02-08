@@ -17,9 +17,9 @@ pub struct PasswordManager {
     pub credentials: Vec<Credential>,
 }
 
-pub struct EncryptionKey {
-    key: Vec<u8>, // The actual key material, which should be securely generated and stored
-}
+// pub struct EncryptionKey {
+//     key: Vec<u8>, // The actual key material, which should be securely generated and stored
+// }
 
 impl PasswordManager {
     pub fn add_credentials(&mut self, creds: Credential) {

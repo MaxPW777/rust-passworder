@@ -1,6 +1,6 @@
 use std::{
     io::{self, Write},
-    path::PathBuf,
+    path::Path,
 };
 
 use crate::{
@@ -37,11 +37,7 @@ fn password_input(service_name: String) -> Credential {
     }
 }
 
-pub fn new_password(
-    mut password_manager: PasswordManager,
-    service_name: String,
-    filepath: &PathBuf,
-) {
+pub fn new_password(mut password_manager: PasswordManager, service_name: String, filepath: &Path) {
     let creds: Credential = password_input(service_name);
     password_manager.add_credentials(creds);
     save_passwords(filepath, password_manager)

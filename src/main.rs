@@ -1,4 +1,4 @@
-use std::{env::args, path::PathBuf, vec};
+use std::{env::args, path::PathBuf};
 
 use password_manager::{new_password, remove_password};
 use storage::read_passwords;
