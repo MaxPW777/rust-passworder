@@ -1,3 +1,4 @@
+use rand::{distributions::Alphanumeric, Rng};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{
@@ -38,6 +39,15 @@ USAGE:
     quit                quits program
     "
     )
+}
+
+fn generate_random_password() -> String {
+    let password: String = rand::thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(10)
+        .map(char::from)
+        .collect();
+    password
 }
 
 fn new_password(service_name: String) {
@@ -92,7 +102,7 @@ fn main() {
     let mut args = args();
     let mut _program = args.next().expect("program");
     let path: PathBuf = PathBuf::from("src/passwords.json");
-    println!("{:?}", read_passwords(path).credentials);
+    println!("{}", generate_random_password());
 
     if let Some(argument) = args.next() {
         match argument.as_str() {
