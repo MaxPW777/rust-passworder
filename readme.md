@@ -70,6 +70,24 @@ To list all services with stored passwords, use the list command:
 cargo run -- list
 ```
 
+### Getting a single service
+
+To get the password of a single service, use the get command:
+
+```bash
+cargo run -- get "service name"
+```
+
+### Deleting a service
+
+To delete a service from the database, use the del command
+
+```bash
+cargo run -- del "service name"
+```
+
+You can also use the `-nuke` tag to delete all the passwords
+
 ### Security
 
 This password manager uses AES encryption for storing passwords securely. Ensure you keep the master password safe and secure.
