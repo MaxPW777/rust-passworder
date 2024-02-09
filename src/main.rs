@@ -26,7 +26,7 @@ fn main() {
     let mut args = args();
     args.next().expect("program");
     let filepath: PathBuf = PathBuf::from("passwords.json");
-    let mut passwords = read_passwords(&filepath);
+    let passwords = read_passwords(&filepath);
 
     if let Some(argument) = args.next() {
         match argument.as_str() {

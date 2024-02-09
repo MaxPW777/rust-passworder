@@ -22,19 +22,32 @@ pub struct PasswordManager {
 // }
 
 impl PasswordManager {
+    pub fn check_credentials(&mut self, service_name: &String) -> Result<(), &str> {
+        for credential in &self.credentials {
+            // Iterate over a reference to avoid moving
+            if &credential.service_name == service_name {
+                return Err("service name already exists");
+            }
+        }
+        Ok(())
+    }
     pub fn add_credentials(&mut self, creds: Credential) {
-        self.credentials.push(creds);
+        self.credentials.push(creds); // Push creds after the loop
     }
 }
 
 impl fmt::Display for PasswordManager {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for credential in &self.credentials {
-            writeln!(
-                f,
-                "Service Name: {}, Password: {}",
-                credential.service_name, credential.encrypted_password
-            )?;
+        if self.credentials.is_empty() {
+            writeln!(f, "No credentials found")?;
+        } else {
+            for credential in &self.credentials {
+                writeln!(
+                    f,
+                    "Service Name: {}, Password: {}",
+                    credential.service_name, credential.encrypted_password
+                )?;
+            }
         }
         Ok(())
     }

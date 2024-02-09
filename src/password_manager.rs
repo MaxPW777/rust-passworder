@@ -38,8 +38,13 @@ fn password_input(service_name: String) -> Credential {
 }
 
 pub fn new_password(mut password_manager: PasswordManager, service_name: String, filepath: &Path) {
-    let creds: Credential = password_input(service_name);
-    password_manager.add_credentials(creds);
+    match password_manager.check_credentials(&service_name) {
+        Ok(()) => {
+            let creds = password_input(service_name);
+            password_manager.add_credentials(creds);
+        }
+        Err(error) => println!("an error has occured: {}", error),
+    }
     save_passwords(filepath, password_manager)
 }
 
