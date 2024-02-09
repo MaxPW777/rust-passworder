@@ -34,6 +34,15 @@ impl PasswordManager {
     pub fn add_credentials(&mut self, creds: Credential) {
         self.credentials.push(creds); // Push creds after the loop
     }
+    pub fn get_credentials(&mut self, service_name: &String) -> Option<&String> {
+        for credential in &self.credentials {
+            // Iterate over a reference to avoid moving
+            if &credential.service_name == service_name {
+                return Some(&credential.encrypted_password);
+            }
+        }
+        None
+    }
 }
 
 impl fmt::Display for PasswordManager {

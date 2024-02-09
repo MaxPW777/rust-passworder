@@ -1,6 +1,6 @@
 use std::{env::args, path::PathBuf};
 
-use password_manager::{new_password, remove_password};
+use password_manager::{get_password, new_password, remove_password};
 use storage::read_passwords;
 
 mod models;
@@ -37,6 +37,7 @@ fn main() {
             ),
             "remove" => remove_password(),
             "list" => println!("{}", passwords),
+            "get" => get_password(passwords, args.next().expect("no service name found")),
             _ => intro(),
         }
     }

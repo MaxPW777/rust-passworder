@@ -56,3 +56,10 @@ pub fn remove_password() {
     let stdin = io::stdin(); // We get `Stdin` here.
     stdin.read_line(&mut service_name).unwrap();
 }
+
+pub fn get_password(mut password_manager: PasswordManager, service_name: String) {
+    match password_manager.get_credentials(&service_name) {
+        Some(password) => println!("the password for {} is : {}", service_name, password),
+        None => println!("password doesn't exist"),
+    }
+}
