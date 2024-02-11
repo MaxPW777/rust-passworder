@@ -38,23 +38,28 @@ fn password_input(service_name: String) -> Credential {
 }
 
 pub fn new_password(mut password_manager: PasswordManager, service_name: String, filepath: &Path) {
-    match password_manager.check_credentials(&service_name) {
-        Ok(()) => {
+    match password_manager.credential_exists(&service_name) {
+        false => {
             let creds = password_input(service_name);
             password_manager.add_credentials(creds);
         }
-        Err(error) => println!("an error has occured: {}", error),
+        true => println!("password already exists"),
     }
     save_passwords(filepath, password_manager)
 }
 
-pub fn remove_password() {
-    let mut service_name = String::new();
-
-    print!("Enter the name of the service: ");
-    io::stdout().flush().unwrap(); // Flush stdout to ensure the prompt appears immediately
-    let stdin = io::stdin(); // We get `Stdin` here.
-    stdin.read_line(&mut service_name).unwrap();
+pub fn remove_password(
+    mut password_manager: PasswordManager,
+    service_name: String,
+    filepath: &Path,
+) {
+    match password_manager.credential_exists(&service_name) {
+        true => {
+            password_manager.delete_credentials(&service_name);
+        }
+        false => println!("an error has occured:"),
+    }
+    save_passwords(filepath, password_manager)
 }
 
 pub fn get_password(mut password_manager: PasswordManager, service_name: String) {

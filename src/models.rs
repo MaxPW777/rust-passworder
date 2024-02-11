@@ -22,18 +22,32 @@ pub struct PasswordManager {
 // }
 
 impl PasswordManager {
-    pub fn check_credentials(&mut self, service_name: &String) -> Result<(), &str> {
+    pub fn credential_exists(&mut self, service_name: &String) -> bool {
         for credential in &self.credentials {
             // Iterate over a reference to avoid moving
             if &credential.service_name == service_name {
-                return Err("service name already exists");
+                return true;
             }
         }
-        Ok(())
+        false
     }
     pub fn add_credentials(&mut self, creds: Credential) {
         self.credentials.push(creds); // Push creds after the loop
     }
+    pub fn delete_credentials(&mut self, service_name: &str) -> Result<(), &str> {
+        let initial_len = self.credentials.len();
+
+        self.credentials
+            .retain(|credential| credential.service_name != service_name);
+
+        if self.credentials.len() == initial_len {
+            // No credentials were removed, indicating the service name was not found
+            Err("Service name not found")
+        } else {
+            Ok(())
+        }
+    }
+
     pub fn get_credentials(&mut self, service_name: &String) -> Option<&String> {
         for credential in &self.credentials {
             // Iterate over a reference to avoid moving

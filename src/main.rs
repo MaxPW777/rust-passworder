@@ -35,9 +35,13 @@ fn main() {
                 args.next().expect("no service name found"),
                 &filepath,
             ),
-            "remove" => remove_password(),
             "list" => println!("{}", passwords),
             "get" => get_password(passwords, args.next().expect("no service name found")),
+            "del" => remove_password(
+                passwords,
+                args.next().expect("no service name found"),
+                &filepath,
+            ),
             _ => intro(),
         }
     }
