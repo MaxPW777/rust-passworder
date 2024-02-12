@@ -55,11 +55,14 @@ pub fn remove_password(
 ) {
     match password_manager.credential_exists(&service_name) {
         true => {
-            password_manager.delete_credentials(&service_name);
+            match password_manager.delete_credentials(&service_name) {
+                Err(error) => println!("an error has occured: {}", error),
+                Ok(()) => println!("credential has been deleted"),
+            }
+            save_passwords(filepath, password_manager)
         }
-        false => println!("an error has occured:"),
+        false => println!("password does not exist"),
     }
-    save_passwords(filepath, password_manager)
 }
 
 pub fn get_password(mut password_manager: PasswordManager, service_name: String) {
