@@ -6,6 +6,7 @@ use storage::read_passwords;
 mod models;
 mod password_manager;
 mod storage;
+mod test;
 mod utils;
 
 fn intro() {
