@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod password_manipulating {
     use crate::models::{Credential, PasswordManager};
 
     // Function to create a test instance of PasswordManager with predefined credentials
@@ -72,21 +72,19 @@ mod tests {
     #[test]
     fn test_new_password() {
         let mut password_manager = setup_password_manager();
-        let service_name = String::from("example");
-        todo!()
+        let service_name = String::from("test");
+        password_manager.add_credentials(Credential {
+            service_name: service_name.clone(),
+            encrypted_password: "test".to_string(),
+        });
+        assert!(password_manager.get_credentials(&service_name).is_some())
     }
 
     #[test]
     fn test_remove_password() {
         let mut password_manager = setup_password_manager();
-        let service_name = String::from("example");
-        todo!()
-    }
-
-    #[test]
-    fn test_get_password() {
-        let mut password_manager = setup_password_manager();
-        let service_name = String::from("example");
-        todo!()
+        let service_name = String::from("steam");
+        let _ = password_manager.delete_credentials(&service_name);
+        assert!(password_manager.get_credentials(&service_name).is_none())
     }
 }
